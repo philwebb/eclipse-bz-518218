@@ -1,0 +1,21 @@
+## m2e issue 518218
+
+This project reproduces https://bugs.eclipse.org/bugs/show_bug.cgi?id=518218#add_comment[eclipse issue 518218].
+
+The project uses the https://github.com/FasterXML/jackson-modules-java8/tree/master/parameter-names[Jackson parameter names module] which relies on Java 8's `-parameters` flag.
+
+If you import the project into Eclipse, clean the project and then run either `com.example.eclipsebz518218.Application` or the `com.example.eclipsebz518218.NameTests` you'll see:
+
+----
+Constructor threw exception; nested exception is
+  com.fasterxml.jackson.databind.exc.InvalidDefinitionException:
+  Can not construct instance of com.example.eclipsebz518218.Name
+  (no Creators, like default construct, exist): can not deserialize from Object value (no delegate- or property-based Creator)
+ at [Source: (byte[])"{"first":"Fred", "last":"Bricon"}"; line: 1, column: 2]
+----
+
+If you right click on the project, select `Properties` -> `Java Compiler` and check "Store information about method parameters (usable via reflection)" the problem goes away.
+
+Unfortunately `Maven` -> `Update Project...` will cause the setting to be unchecked again.
+
+If you build from the command line the tests pass, you can also run `java -jar target/eclipsebz518218-1.0.0-SNAPSHOT.jar` without issue.
